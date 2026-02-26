@@ -3,6 +3,7 @@
 Airflow • PostgreSQL • dbt • Docker • GitHub Actions
 
 ---
+![CI](https://github.com/Steevexu/Flight-Airflow-pipeline/actions/workflows/ci.yml/badge.svg)
 
 # 📌 Overview
 
