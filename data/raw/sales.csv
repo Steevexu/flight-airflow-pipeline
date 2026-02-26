@@ -1,0 +1,4 @@
+order_id,order_date,customer_id,product_id,quantity,unit_price,country
+A001,2025-01-01,C01,P01,2,19.90,FR
+A002,2025-01-01,C02,P02,1,99.00,FR
+A003,2025-01-02,C01,P02,3,99.00,DE
