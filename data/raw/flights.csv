@@ -1,0 +1,5 @@
+flight_id,flight_date,origin,destination,airline,departure_delay,arrival_delay,distance_km
+F001,2025-01-01,CDG,LHR,AF,10,5,350
+F002,2025-01-01,CDG,JFK,AF,0,-5,5850
+F003,2025-01-02,LHR,CDG,BA,15,20,350
+F004,2025-01-02,JFK,CDG,DL,-5,0,5850
