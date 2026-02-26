@@ -2,12 +2,13 @@ CREATE SCHEMA IF NOT EXISTS staging;
 CREATE SCHEMA IF NOT EXISTS marts;
 
 CREATE TABLE IF NOT EXISTS staging.flight_raw (
-  order_id        TEXT,
-  order_date      DATE,
-  customer_id     TEXT,
-  product_id      TEXT,
-  quantity        INT,
-  unit_price      NUMERIC(10,2),
-  country         TEXT,
-  ingested_at     TIMESTAMP DEFAULT NOW()
+  flight_id        TEXT,
+  flight_date      DATE,
+  origin           TEXT,
+  destination      TEXT,
+  airline          TEXT,
+  departure_delay  INT,
+  arrival_delay    INT,
+  distance_km      INT,
+  ingested_at      TIMESTAMP DEFAULT NOW()
 );
