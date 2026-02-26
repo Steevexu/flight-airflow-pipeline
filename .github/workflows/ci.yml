@@ -16,15 +16,17 @@ jobs:
           POSTGRES_USER: airflow
           POSTGRES_PASSWORD: airflow
           POSTGRES_DB: warehouse
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd="pg_isready -U airflow -d warehouse"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=10
+          --health-retries=20
 
     env:
       PYTHONPATH: ${{ github.workspace }}
-      PG_HOST: postgres
+      PG_HOST: localhost
       PG_PORT: "5432"
       PG_DB: warehouse
       PG_USER: airflow
@@ -54,19 +56,18 @@ jobs:
         shell: bash
         run: |
           set +e
-          for i in {1..30}; do
+          for i in {1..40}; do
             pg_isready -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DB"
             rc=$?
             if [ "$rc" -eq 0 ]; then
               echo "Postgres is ready!"
               exit 0
             fi
-            echo "$PG_HOST:$PG_PORT - not ready yet (attempt $i/30)"
+            echo "$PG_HOST:$PG_PORT - not ready yet (attempt $i/40)"
             sleep 2
           done
           echo "Postgres did not become ready in time"
           exit 1
-
       - name: Lint (ruff)
         run: |
           ruff check .
@@ -105,3 +106,7 @@ jobs:
       - name: dbt test
         run: |
           dbt test --project-dir dbt/flight_dbt --profiles-dir dbt/profiles
+
+      - name: Postgres logs (debug)
+        if: failure()
+        run: docker logs ${{ job.services.postgres.id }}
