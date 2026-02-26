@@ -1,5 +1,6 @@
 import pandas as pd
 import pytest
+import numpy as np
 
 from etl.quality import validate_flights
 from etl.transform import clean_flights
@@ -42,5 +43,5 @@ def test_clean_flights_converts_types():
     assert str(out.loc[0, "flight_date"]) == "2025-01-01"
     assert out.loc[0, "origin"] == "CDG"
     assert out.loc[0, "destination"] == "LHR"
-    assert isinstance(out.loc[0, "departure_delay"], int)
-    assert isinstance(out.loc[0, "distance_km"], int)
+    assert isinstance(out.loc[0, "departure_delay"], (int, np.integer))
+    assert isinstance(out.loc[0, "distance_km"], (int, np.integer))
