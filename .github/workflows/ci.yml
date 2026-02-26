@@ -51,12 +51,21 @@ jobs:
           pip install pandas psycopg2-binary dbt-postgres==1.8.2
 
       - name: Wait for Postgres
+        shell: bash
         run: |
+          set +e
           for i in {1..30}; do
-            pg_isready -h "$PG_HOST"
-            sleep 2 
+            pg_isready -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DB"
+            rc=$?
+            if [ "$rc" -eq 0 ]; then
+              echo "Postgres is ready!"
+              exit 0
+            fi
+            echo "$PG_HOST:$PG_PORT - not ready yet (attempt $i/30)"
+            sleep 2
           done
-          echo "Postgres did not become ready in time" && exit 1
+          echo "Postgres did not become ready in time"
+          exit 1
 
       - name: Lint (ruff)
         run: |
