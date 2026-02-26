@@ -1,13 +1,14 @@
+import os
 import psycopg2
 from psycopg2.extras import execute_values
 
 def get_conn():
     return psycopg2.connect(
-        host="postgres",
-        port=5432,
-        dbname="warehouse",
-        user="airflow",
-        password="airflow",
+        host=os.getenv("PG_HOST", "postgres"),
+        port=int(os.getenv("PG_PORT", "5432")),
+        dbname=os.getenv("PG_DB", "warehouse"),
+        user=os.getenv("PG_USER", "airflow"),
+        password=os.getenv("PG_PASSWORD", "airflow"),
     )
 
 def load_flights_to_staging(df):
