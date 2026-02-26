@@ -1,0 +1,16 @@
+name: "flight_dbt"
+version: "1.0.0"
+config-version: 2
+
+profile: "flight_dbt"
+
+model-paths: ["models"]
+
+models:
+  flight_dbt:
+    staging:
+      +schema: staging
+      +materialized: view
+    marts:
+      +schema: marts
+      +materialized: table
