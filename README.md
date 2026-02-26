@@ -65,7 +65,8 @@ Flight-Airflow-pipeline/
 │       └── profiles.yml
 │
 ├── sql/
-│   └── 01_init.sql
+│   ├── 01_init.sql
+│   └── 02_marts.sql
 │
 ├── data/raw/
 │   └── flights.csv
