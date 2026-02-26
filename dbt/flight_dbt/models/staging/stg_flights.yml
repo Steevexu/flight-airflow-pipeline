@@ -1,12 +1,20 @@
 version: 2
 
 models:
-  - name: stg_sales
+  - name: stg_flights
     columns:
-      - name: order_id
-        tests: [not_null]
-      - name: order_date
-        tests: [not_null]
-      - name: quantity
+      - name: flight_id
+        tests:
+          - not_null
+      - name: flight_date
+        tests:
+          - not_null
+      - name: origin
+        tests:
+          - not_null
+      - name: destination
+        tests:
+          - not_null
+      - name: airline
         tests:
           - not_null
