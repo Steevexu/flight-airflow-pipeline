@@ -1,9 +1,11 @@
 import pandas as pd
 
-def clean_sales(df: pd.DataFrame) -> pd.DataFrame:
+def clean_flights(df: pd.DataFrame) -> pd.DataFrame:
     out = df.copy()
-    out["order_date"] = pd.to_datetime(out["order_date"]).dt.date
-    out["quantity"] = out["quantity"].astype(int)
-    out["unit_price"] = out["unit_price"].astype(float)
-    out["country"] = out["country"].astype(str).str.strip()
+    out["flight_date"] = pd.to_datetime(out["flight_date"]).dt.date
+    out["departure_delay"] = out["departure_delay"].astype(int)
+    out["arrival_delay"] = out["arrival_delay"].astype(int)
+    out["distance_km"] = out["distance_km"].astype(int)
+    out["origin"] = out["origin"].str.strip()
+    out["destination"] = out["destination"].str.strip()
     return out
