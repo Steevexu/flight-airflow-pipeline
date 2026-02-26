@@ -1,52 +1,37 @@
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 
 from etl.extract import read_csv
-from etl.transform import clean_sales
-from etl.quality import validate_sales
-from etl.load import load_sales_to_staging, get_conn
+from etl.transform import clean_flights
+from etl.quality import validate_flights
+from etl.load import load_flights_to_staging
 
-CSV_PATH = "/opt/airflow/data/raw/sales.csv"
+CSV_PATH = "/opt/airflow/data/raw/flights.csv"
+DBT_DIR = "/opt/airflow/dbt/flight_dbt"
+PROFILES_DIR = "/opt/airflow/dbt/profiles"
 
 def task_extract_transform_validate(**_):
     df = read_csv(CSV_PATH)
-    df = clean_sales(df)
-    validate_sales(df)
-    # stocker temporairement en parquet dans le volume partagé
-    df.to_parquet("/opt/airflow/data/raw/_clean_sales.parquet", index=False)
+    df = clean_flights(df)
+    validate_flights(df)
+    df.to_parquet("/opt/airflow/data/raw/_clean_flights.parquet", index=False)
 
 def task_load(**_):
     import pandas as pd
-    df = pd.read_parquet("/opt/airflow/data/raw/_clean_sales.parquet")
-    n = load_sales_to_staging(df)
-    print(f"Loaded {n} rows into staging.sales_raw")
-
-def task_build_mart(**_):
-    sql = """
-    INSERT INTO marts.daily_revenue(day, orders, units, revenue)
-    SELECT
-      order_date AS day,
-      COUNT(DISTINCT order_id) AS orders,
-      SUM(quantity) AS units,
-      SUM(quantity * unit_price)::numeric(14,2) AS revenue
-    FROM staging.sales_raw
-    GROUP BY order_date
-    ON CONFLICT (day) DO UPDATE
-      SET orders = EXCLUDED.orders,
-          units = EXCLUDED.units,
-          revenue = EXCLUDED.revenue;
-    """
-    with get_conn() as conn, conn.cursor() as cur:
-        cur.execute(sql)
+    df = pd.read_parquet("/opt/airflow/data/raw/_clean_flights.parquet")
+    n = load_flights_to_staging(df)
+    print(f"Loaded {n} rows into staging.flight_raw")
 
 with DAG(
-    dag_id="retail_etl",
+    dag_id="flight_etl",
     start_date=datetime(2025, 1, 1),
-    schedule=None,   # manuel (tu pourras mettre @daily ensuite)
+    schedule=None,
     catchup=False,
     tags=["portfolio", "data-engineering"],
 ) as dag:
+
     extract_transform_validate = PythonOperator(
         task_id="extract_transform_validate",
         python_callable=task_extract_transform_validate,
@@ -57,9 +42,14 @@ with DAG(
         python_callable=task_load,
     )
 
-    build_mart = PythonOperator(
-        task_id="build_mart",
-        python_callable=task_build_mart,
+    dbt_run = BashOperator(
+        task_id="dbt_run",
+        bash_command=f"dbt run --project-dir {DBT_DIR} --profiles-dir {PROFILES_DIR}",
     )
 
-    extract_transform_validate >> load_staging >> build_mart
+    dbt_test = BashOperator(
+        task_id="dbt_test",
+        bash_command=f"dbt test --project-dir {DBT_DIR} --profiles-dir {PROFILES_DIR}",
+    )
+
+    extract_transform_validate >> load_staging >> dbt_run >> dbt_test
