@@ -24,7 +24,7 @@ jobs:
 
     env:
       PYTHONPATH: ${{ github.workspace }}
-      PG_HOST: localhost
+      PG_HOST: postgres
       PG_PORT: "5432"
       PG_DB: warehouse
       PG_USER: airflow
@@ -53,8 +53,8 @@ jobs:
       - name: Wait for Postgres
         run: |
           for i in {1..30}; do
-            pg_isready -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DB" && exit 0
-            sleep 2
+            pg_isready -h "$PG_HOST"
+            sleep 2 
           done
           echo "Postgres did not become ready in time" && exit 1
 
