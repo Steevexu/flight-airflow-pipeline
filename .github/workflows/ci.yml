@@ -13,9 +13,12 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: airflow
-          POSTGRES_PASSWORD: airflow
-          POSTGRES_DB: warehouse
+          PYTHONPATH: ${{ github.workspace }}
+          PG_HOST: localhost
+          PG_PORT: "5432"
+          PG_DB: warehouse
+          PG_USER: airflow
+          PG_PASSWORD: airflow
         ports:
           - 5432:5432
         options: >-
