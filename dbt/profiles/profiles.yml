@@ -3,10 +3,9 @@ flight_dbt:
   outputs:
     dev:
       type: postgres
-      host: "{{ env_var('PG_HOST', 'postgres') }}"
-      user: "{{ env_var('PG_USER', 'airflow') }}"
-      password: "{{ env_var('PG_PASSWORD', 'airflow') }}"
-      port: "{{ env_var('PG_PORT', 5432) | int }}"
-      dbname: "{{ env_var('PG_DB', 'warehouse') }}"
+      host: postgres
+      user: airflow
+      password: airflow
+      port: 5432
+      dbname: warehouse
       schema: public
-      threads: 4
