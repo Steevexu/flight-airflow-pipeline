@@ -45,34 +45,50 @@ CSV → Python Validation → Postgres (staging) → dbt (staging models)
 Flight-Airflow-pipeline/
 │
 ├── dags/
-│   └── flight_etl.py
+│   └── flight_etl.py                 # Airflow DAG (orchestration)
 │
 ├── etl/
-│   ├── extract.py
-│   ├── transform.py
-│   ├── quality.py
-│   └── load.py
+│   ├── __init__.py                   # Python package marker
+│   ├── extract.py                    # CSV ingestion
+│   ├── transform.py                  # Data cleaning & typing
+│   ├── quality.py                    # Business validation rules
+│   └── load.py                       # Load to PostgreSQL staging
 │
 ├── dbt/
 │   ├── flight_dbt/
 │   │   ├── dbt_project.yml
-│   │   └── models/
-│   │       ├── staging/
-│   │       │   └── stg_flights.sql
-│   │       └── marts/
-│   │           └── daily_flight_metrics.sql
+│   │   ├── models/
+│   │   │   ├── staging/
+│   │   │   │   ├── stg_flights.sql
+│   │   │   │   └── stg_flights.yml   # dbt schema tests
+│   │   │   └── marts/
+│   │   │       └── daily_flight_metrics.sql
+│   │   ├── macros/                   # (optional / future use)
+│   │   ├── target/                   # dbt build artifacts (gitignored)
+│   │   └── dbt_packages/             # dbt dependencies (gitignored)
+│   │
 │   └── profiles/
-│       └── profiles.yml
+│       └── profiles.yml              # Environment-based DB connection
 │
 ├── sql/
-│   └── 01_init.sql
+│   └── 01_init.sql                   # Schema + staging table creation
 │
-├── data/raw/
-│   └── flights.csv
+├── data/
+│   └── raw/
+│       └── flights.csv               # Sample dataset
 │
-├── Dockerfile
-├── docker-compose.yml
-└── .github/workflows/ci.yml
+├── tests/
+│   └── test_quality.py               # Unit tests (pytest)
+│
+├── .github/
+│   └── workflows/
+│       └── ci.yml                    # GitHub Actions CI pipeline
+│
+├── Dockerfile                        # Custom Airflow image (dbt included)
+├── docker-compose.yml                # Local infrastructure setup
+├── requirements-dev.txt              # Dev dependencies (pytest, ruff)
+├── .gitignore
+└── README.md
 ```
 
 # 🚀 How to Run Locally
