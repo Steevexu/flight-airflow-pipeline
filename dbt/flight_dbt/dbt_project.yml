@@ -5,10 +5,13 @@ config-version: 2
 profile: "flight_dbt"
 
 model-paths: ["models"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
 
 models:
   flight_dbt:
     staging:
+      +schema: staging
       +materialized: view
     marts:
       +schema: marts

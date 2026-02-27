@@ -8,5 +8,5 @@ flight_dbt:
       password: "{{ env_var('PG_PASSWORD', 'airflow') }}"
       port: "{{ env_var('PG_PORT', 5432) | int }}"
       dbname: "{{ env_var('PG_DB', 'warehouse') }}"
-      schema: staging
+      schema: public
       threads: 4
