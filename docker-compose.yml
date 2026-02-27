@@ -17,10 +17,13 @@ services:
     depends_on:
       - postgres
     environment:
+      PYTHONPATH: /opt/airflow
+      AIRFLOW__WEBSERVER__SECRET_KEY: my_super_secret_key
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/warehouse
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       _PIP_ADDITIONAL_REQUIREMENTS: "psycopg2-binary==2.9.9 pandas==2.2.2"
+      
     volumes:
       - ./dbt:/opt/airflow/dbt
       - ./dags:/opt/airflow/dags
@@ -41,6 +44,8 @@ services:
     depends_on:
       - postgres
     environment:
+      PYTHONPATH: /opt/airflow
+      AIRFLOW__WEBSERVER__SECRET_KEY: my_super_secret_key
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/warehouse
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
