@@ -93,21 +93,33 @@ Flight-Airflow-pipeline/
 
 # 🚀 How to Run Locally
 
+🏗 Start the Infrastructure
+
+From the root of the project:
 ```bash
-docker compose up -d
+docker compose up --build
 ```
-1️⃣ Start infrastructure
 
-Airflow UI:
-👉 http://localhost:8080
-Login: admin / admin
+This will start:
 
-2️⃣ Trigger DAG
-
-Enable and trigger:
+- PostgreSQL
+- Airflow Webserver
+- Airflow Scheduler
+  
+🌐 Access Airflow UI
+Open your browser:
 ```code
-flight_etl
+http://localhost:8080
 ```
+Default credentials:
+Username: airflow
+Password: airflow
+
+▶️ Run the Pipeline
+
+1. Enable the DAG flight_etl
+2. Click Trigger DAG
+3. Monitor task execution
 
 Pipeline flow:
 ```code
